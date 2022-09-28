@@ -99,7 +99,7 @@ class P2P:
         use_ipfs: bool = False,
         use_relay: bool = True,
         persistent_conn_max_msg_size: int = DEFAULT_MAX_MSG_SIZE,
-        quic: Optional[bool] = False,
+        quic: Optional[bool] = True,
         use_relay_hop: Optional[bool] = False,
         use_relay_discovery: Optional[bool] = False,
     ) -> "P2P":
