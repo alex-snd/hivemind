@@ -99,9 +99,9 @@ class P2P:
         use_ipfs: bool = False,
         use_relay: bool = True,
         persistent_conn_max_msg_size: int = DEFAULT_MAX_MSG_SIZE,
-        quic: Optional[bool] = None,
-        use_relay_hop: Optional[bool] = None,
-        use_relay_discovery: Optional[bool] = None,
+        quic: Optional[bool] = False,
+        use_relay_hop: Optional[bool] = False,
+        use_relay_discovery: Optional[bool] = False,
     ) -> "P2P":
         """
         Start a new p2pd process and connect to it.
@@ -135,14 +135,6 @@ class P2P:
         assert not (
             initial_peers and use_ipfs
         ), "User-defined initial_peers and use_ipfs=True are incompatible, please choose one option"
-
-        if not all(arg is None for arg in [quic, use_relay_hop, use_relay_discovery]):
-            warnings.warn(
-                "Parameters `quic`, `use_relay_hop`, and `use_relay_discovery` of hivemind.P2P "
-                "have no effect since libp2p 0.17.0 and will be removed in hivemind 1.2.0+",
-                DeprecationWarning,
-                stacklevel=2,
-            )
 
         self = cls()
         with path(cli, P2PD_FILENAME) as p:
@@ -183,7 +175,10 @@ class P2P:
             idleTimeout=f"{idle_timeout}s",
             listen=self._daemon_listen_maddr,
             natPortMap=nat_port_map,
+            quic=quic,
             relay=use_relay,
+            relayDiscovery=use_relay_discovery,
+            relayHop=use_relay_hop,
             relayHopLimit=relay_hop_limit,
             tls=tls,
             persistentConnMaxMsgSize=persistent_conn_max_msg_size,
